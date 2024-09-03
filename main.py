@@ -2,7 +2,8 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from database.requests.product_requests import create_product_db, get_available_product_db
+from database.requests.product_requests import (create_product_db,
+                                                get_available_product_db)
 from database.requests.purchase_requests import create_purchase_db
 from database.requests.user_requests import create_user_db, user_exists_db
 
@@ -28,7 +29,13 @@ class Purchase(BaseModel):
 def create_product(product: Product, api_key: str) -> int:
     if api_key != SECRET_KEY:
         raise HTTPException(status_code=403)
-    return create_product_db(product.name, product.description, product.price, product.amount, product.image)
+    return create_product_db(
+        product.name,
+        product.description,
+        product.price,
+        product.amount,
+        product.image
+    )
 
 
 @app.post("/users/")
@@ -49,7 +56,11 @@ def user_exists(user_id: int, api_key: str) -> bool:
 def create_purchase(purchase: Purchase, api_key: str) -> int:
     if api_key != SECRET_KEY:
         raise HTTPException(status_code=403)
-    return create_purchase_db(purchase.user_id, purchase.product_id, purchase.price)
+    return create_purchase_db(
+        purchase.user_id,
+        purchase.product_id,
+        purchase.price
+    )
 
 
 @app.get("/products/")
@@ -66,3 +77,4 @@ def read_root():
 
 if __name__ == "__main__":
     uvicorn.run(app, host='127.0.0.1', port=8000)
+
